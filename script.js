@@ -4,33 +4,61 @@ let errors = 0;
 const maxErrors = 4;
 const maxScore = 15;
 
-function generateDecimalNumber() {
-  return +(Math.random() * 19.9 + 0.1).toFixed(1);
+function generateIntegerNumber(max = 20) {
+  // Gera inteiro entre 1 e max (padrão 20)
+  return Math.floor(Math.random() * max) + 1;
+}
+
+function generatePerfectSquare(maxRoot = 20) {
+  // Gera um quadrado perfeito: (1^2, 2^2, ..., maxRoot^2)
+  const root = generateIntegerNumber(maxRoot);
+  return { root, square: root * root };
 }
 
 function generateQuestion() {
-  const num1 = generateDecimalNumber();
-  const num2 = generateDecimalNumber();
-  const operations = ['+', '-'];
+  const operations = ['+', '-', '*', '/', '√'];
   const operation = operations[Math.floor(Math.random() * operations.length)];
-
+  
   let questionText = '';
 
-  switch (operation) {
-    case '+':
-      currentAnswer = +(num1 + num2).toFixed(1);
-      questionText = `${num1.toFixed(1)} + ${num2.toFixed(1)}`;
-      break;
+  if (operation === '√') {
+    // gera raiz quadrada de um quadrado perfeito
+    const { root, square } = generatePerfectSquare();
+    currentAnswer = root;
+    questionText = `√${square}`;
+  } else {
+    const num1 = generateIntegerNumber();
+    const num2 = generateIntegerNumber();
 
-    case '-':
-      if (num1 >= num2) {
-        currentAnswer = +(num1 - num2).toFixed(1);
-        questionText = `${num1.toFixed(1)} - ${num2.toFixed(1)}`;
-      } else {
-        currentAnswer = +(num2 - num1).toFixed(1);
-        questionText = `${num2.toFixed(1)} - ${num1.toFixed(1)}`;
-      }
-      break;
+    switch (operation) {
+      case '+':
+        currentAnswer = num1 + num2;
+        questionText = `${num1} + ${num2}`;
+        break;
+
+      case '-':
+        if (num1 >= num2) {
+          currentAnswer = num1 - num2;
+          questionText = `${num1} - ${num2}`;
+        } else {
+          currentAnswer = num2 - num1;
+          questionText = `${num2} - ${num1}`;
+        }
+        break;
+
+      case '*':
+        currentAnswer = num1 * num2;
+        questionText = `${num1} × ${num2}`;
+        break;
+
+      case '/':
+        // para divisão, garantir divisão exata (sem resto)
+        // gera dividend = num1 * num2 para garantir divisibilidade
+        const dividend = num1 * num2;
+        currentAnswer = num1; // porque dividend / num2 = num1
+        questionText = `${dividend} ÷ ${num2}`;
+        break;
+    }
   }
 
   document.getElementById('question').textContent = questionText;
@@ -44,7 +72,6 @@ function updateStatus() {
   document.getElementById('score').textContent = `Pontuação: ${score} | Tentativas restantes: ${maxErrors - errors}`;
 }
 
-// Função para finalizar o jogo
 function endGame(message) {
   document.getElementById('feedback').textContent = message;
   document.getElementById('btn-answer').disabled = true;
@@ -94,7 +121,7 @@ function checkAnswer() {
   }
   const userAnswer = Number(inputRaw);
 
-  if (Math.abs(userAnswer - currentAnswer) < 0.15) {
+  if (userAnswer === currentAnswer) {
     score++;
     document.getElementById('feedback').textContent = '✅ Correto!';
     document.getElementById('feedback').style.color = '#b2f2bb';
@@ -129,7 +156,7 @@ document.getElementById('answer').addEventListener('keydown', (e) => {
   }
 });
 
-// Adiciona a meta na tela, acima da pontuação
+// Exibe a meta acima da pontuação
 const goalDiv = document.createElement('div');
 goalDiv.id = 'goal';
 goalDiv.style.marginTop = '15px';
