@@ -7,32 +7,32 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <div id="timer">Tempo restante: 35s</div>
+  <div id="timer" style="font-weight: 700; font-size: 1.2rem; margin-bottom: 15px;">Tempo restante: 35s</div>
 
   <div class="regras">
-  <h2>Regras do Jogo</h2>
-  <ul>
-    <li>Você deve resolver as operações matemáticas apresentadas.</li>
-    <li>Operações incluem: soma (+), subtração (-), multiplicação (×), divisão (÷) e raiz quadrada (√).</li>
-    <li>Digite sua resposta no campo abaixo da pergunta e clique em "Responder" ou pressione Enter.</li>
-    <li>Você tem até 4 erros; após isso, o jogo termina.</li>
-    <li>A meta é atingir 15 pontos para ganhar o jogo.</li>
-    <li>Na operação raiz quadrada, digite o valor inteiro da raiz.</li>
-    <li>Você tem 35 segundos para responder cada pergunta; se o tempo acabar, o jogo termina.</li>
-  </ul>
-  <p>Boa sorte e divirta-se!</p>
-</div>
+    <h2>Regras do Jogo</h2>
+    <ul>
+      <li>Você deve resolver as operações matemáticas apresentadas.</li>
+      <li>Operações incluem: soma (+), subtração (-), multiplicação (×), divisão (÷) e raiz quadrada (√).</li>
+      <li>Digite sua resposta no campo abaixo da pergunta e clique em "Responder" ou pressione Enter.</li>
+      <li>Você tem até 4 erros; após isso, o jogo termina.</li>
+      <li>A meta é atingir 15 pontos para ganhar o jogo.</li>
+      <li>Na operação raiz quadrada, digite o valor inteiro da raiz.</li>
+      <li>Você tem 35 segundos para responder cada pergunta; se o tempo acabar, o jogo termina.</li>
+    </ul>
+    <p>Boa sorte e divirta-se!</p>
+  </div>
 
-  <div class="game-container">
-    
+  <button id="btn-start" style="margin: 20px auto; display: block; padding: 12px 25px; font-size: 1.2rem; border-radius: 12px; cursor: pointer; background-color: #2196f3; color: white; font-weight: 600;">Começar</button>
+
+  <div class="game-container" style="display: none;">
     <h1>Jogo Matemático</h1>
     <div id="question">Carregando pergunta...</div>
-    <input type="number" id="answer" placeholder="Digite sua resposta" autocomplete="off" />
-    <button id="btn-answer">Responder</button>
+    <input type="number" id="answer" placeholder="Digite sua resposta" autocomplete="off" disabled />
+    <button id="btn-answer" disabled>Responder</button>
     <div id="feedback"></div>
     <div id="score">Pontuação: 0</div>
   </div>
- 
 
   <script src="script.js"></script>
 </body>
