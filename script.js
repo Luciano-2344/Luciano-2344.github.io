@@ -147,7 +147,7 @@ answerInput.addEventListener('keydown', (e) => {
   }
 });
 
-// Botão começar/recomeçar
+
 btnStart.addEventListener('click', () => {
   score = 0;
   errors = 0;
@@ -159,6 +159,13 @@ btnStart.addEventListener('click', () => {
   btnStart.style.display = 'none';
   generateQuestion();
 });
+
+
+
+
+
+
+
 
 // Exibe meta acima da pontuação
 const goalDiv = document.createElement('div');
