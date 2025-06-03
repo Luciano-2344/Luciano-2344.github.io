@@ -101,7 +101,7 @@ function endGame(message) {
   feedbackEl.textContent = message;
   btnAnswer.disabled = true;
   answerInput.disabled = true;
-  btnStart.style.display = 'block';
+  btnStart.style.display = 'block'; // Exibe o botão para reiniciar
   btnStart.textContent = 'Recomeçar';
 }
 
@@ -147,7 +147,7 @@ answerInput.addEventListener('keydown', (e) => {
   }
 });
 
-
+// Botão de começar/recomeçar
 btnStart.addEventListener('click', () => {
   score = 0;
   errors = 0;
@@ -155,17 +155,10 @@ btnStart.addEventListener('click', () => {
   feedbackEl.textContent = '';
   btnAnswer.disabled = false;
   answerInput.disabled = false;
-  gameContainer.style.display = 'block';
-  btnStart.style.display = 'none';
+  gameContainer.style.display = 'block'; // Exibe o jogo
+  btnStart.style.display = 'none'; // Esconde o botão de começar
   generateQuestion();
 });
-
-
-
-
-
-
-
 
 // Exibe meta acima da pontuação
 const goalDiv = document.createElement('div');
