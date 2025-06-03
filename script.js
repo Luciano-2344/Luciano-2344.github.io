@@ -4,12 +4,12 @@ let errors = 0;
 const maxErrors = 4;
 const maxScore = 15;
 
-let timeLeft = 30; // segundos
+let timeLeft = 35; // segundos
 let timerInterval;
 
 function startTimer() {
   clearInterval(timerInterval);
-  timeLeft = 30;
+  timeLeft = 35;
   document.getElementById('timer').textContent = `Tempo restante: ${timeLeft}s`;
   timerInterval = setInterval(() => {
     timeLeft--;
