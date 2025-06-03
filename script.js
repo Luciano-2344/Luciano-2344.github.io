@@ -152,6 +152,10 @@ btnStart.addEventListener('click', () => {
   score = 0;
   errors = 0;
   updateStatus();
+
+
+
+  
   feedbackEl.textContent = '';
   btnAnswer.disabled = false;
   answerInput.disabled = false;
