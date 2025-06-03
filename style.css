@@ -15,6 +15,13 @@ body {
   color: #fff;
   gap: 60px;
 }
+#timer {
+  margin-top: 15px;
+  font-weight: 600;
+  font-size: 1.3rem;
+  color: #fff;
+}
+
 .regras {
   background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(10px);

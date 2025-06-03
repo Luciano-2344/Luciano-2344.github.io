@@ -4,61 +4,77 @@ let errors = 0;
 const maxErrors = 4;
 const maxScore = 15;
 
-function generateIntegerNumber(max = 20) {
-  // Gera inteiro entre 1 e max (padrão 20)
-  return Math.floor(Math.random() * max) + 1;
+let timeLeft = 30; // segundos
+let timerInterval;
+
+function startTimer() {
+  clearInterval(timerInterval);
+  timeLeft = 30;
+  document.getElementById('timer').textContent = `Tempo restante: ${timeLeft}s`;
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    document.getElementById('timer').textContent = `Tempo restante: ${timeLeft}s`;
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      endGame('⏰ Tempo esgotado! Jogo encerrado.');
+    }
+  }, 1000);
 }
 
-function generatePerfectSquare(maxRoot = 20) {
-  // Gera um quadrado perfeito: (1^2, 2^2, ..., maxRoot^2)
-  const root = generateIntegerNumber(maxRoot);
-  return { root, square: root * root };
+function generateDecimalNumber() {
+  return +(Math.random() * 19.9 + 0.1).toFixed(1);
 }
+
+// ... (sua função generateQuestion permanece igual, mas chame startTimer nela para reiniciar o tempo a cada pergunta)
 
 function generateQuestion() {
+  const num1 = generateDecimalNumber();
+  const num2 = generateDecimalNumber();
   const operations = ['+', '-', '*', '/', '√'];
   const operation = operations[Math.floor(Math.random() * operations.length)];
-  
+
   let questionText = '';
 
-  if (operation === '√') {
-    // gera raiz quadrada de um quadrado perfeito
-    const { root, square } = generatePerfectSquare();
-    currentAnswer = root;
-    questionText = `√${square}`;
-  } else {
-    const num1 = generateIntegerNumber();
-    const num2 = generateIntegerNumber();
+  switch (operation) {
+    case '+':
+      currentAnswer = +(num1 + num2).toFixed(1);
+      questionText = `${Math.round(num1)} + ${Math.round(num2)}`;
+      break;
 
-    switch (operation) {
-      case '+':
-        currentAnswer = num1 + num2;
-        questionText = `${num1} + ${num2}`;
-        break;
+    case '-':
+      if (num1 >= num2) {
+        currentAnswer = +(num1 - num2).toFixed(1);
+        questionText = `${Math.round(num1)} - ${Math.round(num2)}`;
+      } else {
+        currentAnswer = +(num2 - num1).toFixed(1);
+        questionText = `${Math.round(num2)} - ${Math.round(num1)}`;
+      }
+      break;
 
-      case '-':
-        if (num1 >= num2) {
-          currentAnswer = num1 - num2;
-          questionText = `${num1} - ${num2}`;
-        } else {
-          currentAnswer = num2 - num1;
-          questionText = `${num2} - ${num1}`;
-        }
-        break;
+    case '*':
+      currentAnswer = +(num1 * num2).toFixed(1);
+      questionText = `${Math.round(num1)} × ${Math.round(num2)}`;
+      break;
 
-      case '*':
-        currentAnswer = num1 * num2;
-        questionText = `${num1} × ${num2}`;
-        break;
+    case '/':
+      let divisor, dividend;
+      if (num1 >= num2) {
+        dividend = num1;
+        divisor = num2 === 0 ? 1 : num2;
+      } else {
+        dividend = num2;
+        divisor = num1 === 0 ? 1 : num1;
+      }
+      currentAnswer = +(dividend / divisor).toFixed(1);
+      questionText = `${Math.round(dividend)} ÷ ${Math.round(divisor)}`;
+      break;
 
-      case '/':
-        // para divisão, garantir divisão exata (sem resto)
-        // gera dividend = num1 * num2 para garantir divisibilidade
-        const dividend = num1 * num2;
-        currentAnswer = num1; // porque dividend / num2 = num1
-        questionText = `${dividend} ÷ ${num2}`;
-        break;
-    }
+    case '√':
+      // Raiz quadrada: apenas um número inteiro, pergunta só com um número
+      let n = Math.floor(Math.random() * 400) + 1; // de 1 a 400 para raiz quadrada razoável
+      currentAnswer = Math.round(Math.sqrt(n));
+      questionText = `√${n}`;
+      break;
   }
 
   document.getElementById('question').textContent = questionText;
@@ -66,6 +82,7 @@ function generateQuestion() {
   document.getElementById('answer').focus();
   document.getElementById('feedback').textContent = '';
   updateStatus();
+  startTimer();
 }
 
 function updateStatus() {
@@ -73,6 +90,7 @@ function updateStatus() {
 }
 
 function endGame(message) {
+  clearInterval(timerInterval);
   document.getElementById('feedback').textContent = message;
   document.getElementById('btn-answer').disabled = true;
   document.getElementById('answer').disabled = true;
@@ -121,7 +139,7 @@ function checkAnswer() {
   }
   const userAnswer = Number(inputRaw);
 
-  if (userAnswer === currentAnswer) {
+  if (Math.abs(userAnswer - currentAnswer) < 0.15) {
     score++;
     document.getElementById('feedback').textContent = '✅ Correto!';
     document.getElementById('feedback').style.color = '#b2f2bb';
@@ -156,7 +174,7 @@ document.getElementById('answer').addEventListener('keydown', (e) => {
   }
 });
 
-// Exibe a meta acima da pontuação
+// Adiciona a meta acima da pontuação
 const goalDiv = document.createElement('div');
 goalDiv.id = 'goal';
 goalDiv.style.marginTop = '15px';
