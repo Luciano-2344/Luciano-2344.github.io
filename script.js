@@ -45,8 +45,10 @@ function generateQuestion() {
 
   switch (operation) {
     case '+':
-      currentAnswer = +(num1 + num2).toFixed(1);
-      questionText = `${Math.round(num1)} + ${Math.round(num2)}`;
+      const n1 = Math.round(num1);
+      const n2 = Math.round(num2);
+      currentAnswer = +(n1 + n2).toFixed(1);
+      questionText = `${n1} + ${n2}`;
       break;
 
     case '-':
@@ -113,13 +115,17 @@ function checkAnswer() {
   }
   const userAnswer = Number(inputRaw);
 
-  if (Math.abs(userAnswer - currentAnswer) < 0.15) {
+  const isSquareRoot = questionEl.textContent.includes('√');
+  const roundedUserAnswer = isSquareRoot ? Math.round(userAnswer) : +userAnswer.toFixed(1);
+  const roundedCorrectAnswer = isSquareRoot ? Math.round(currentAnswer) : +currentAnswer.toFixed(1);
+
+  if (roundedUserAnswer === roundedCorrectAnswer) {
     score++;
     feedbackEl.textContent = '✅ Correto!';
     feedbackEl.style.color = '#b2f2bb';
   } else {
     errors++;
-    feedbackEl.textContent = `❌ Errado! Resposta correta: ${currentAnswer}`;
+    feedbackEl.textContent = `❌ Errado! Resposta correta: ${roundedCorrectAnswer}`;
     feedbackEl.style.color = '#ffb3b3';
   }
 
@@ -153,9 +159,6 @@ btnStart.addEventListener('click', () => {
   errors = 0;
   updateStatus();
 
-
-
-  
   feedbackEl.textContent = '';
   btnAnswer.disabled = false;
   answerInput.disabled = false;
