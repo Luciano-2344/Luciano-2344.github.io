@@ -1,47 +1,56 @@
+let score = 0;
+let currentAnswer = 0;
+let errors = 0;
+const maxErrors = 4;
+const maxScore = 15;
+
+let timeLeft = 35;
+let timerInterval;
+
+const timerEl = document.getElementById('timer');
+const questionEl = document.getElementById('question');
+const answerInput = document.getElementById('answer');
+const btnAnswer = document.getElementById('btn-answer');
+const feedbackEl = document.getElementById('feedback');
+const scoreEl = document.getElementById('score');
+const gameContainer = document.querySelector('.game-container');
+const btnStart = document.getElementById('btn-start');
+
+function startTimer() {
+  clearInterval(timerInterval);
+  timeLeft = 35;
+  timerEl.textContent = `Tempo restante: ${timeLeft}s`;
+
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    timerEl.textContent = `Tempo restante: ${timeLeft}s`;
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      endGame('⏰ Tempo esgotado! Jogo encerrado.');
+    }
+  }, 1000);
+}
+
 function generateQuestion() {
-  const operations = ['+', '-', '*', '/', '√'];
+  const operations = ['+', '-'];
   const operation = operations[Math.floor(Math.random() * operations.length)];
+
+  const num1 = Math.floor(Math.random() * 20);
+  const num2 = Math.floor(Math.random() * 20);
+
   let questionText = '';
 
-  switch (operation) {
-    case '+':
-      const a1 = Math.floor(Math.random() * 20);
-      const a2 = Math.floor(Math.random() * 20);
-      currentAnswer = a1 + a2;
-      questionText = `${a1} + ${a2}`;
-      break;
-
-    case '-':
-      const b1 = Math.floor(Math.random() * 20);
-      const b2 = Math.floor(Math.random() * 20);
-      if (b1 >= b2) {
-        currentAnswer = b1 - b2;
-        questionText = `${b1} - ${b2}`;
-      } else {
-        currentAnswer = b2 - b1;
-        questionText = `${b2} - ${b1}`;
-      }
-      break;
-
-    case '*':
-      const m1 = Math.floor(Math.random() * 10);
-      const m2 = Math.floor(Math.random() * 10);
-      currentAnswer = m1 * m2;
-      questionText = `${m1} × ${m2}`;
-      break;
-
-    case '/':
-      const d2 = Math.floor(Math.random() * 9) + 1; // divisor entre 1 e 9
-      const d1 = d2 * Math.floor(Math.random() * 10); // múltiplo do divisor
-      currentAnswer = d1 / d2;
-      questionText = `${d1} ÷ ${d2}`;
-      break;
-
-    case '√':
-      const n = Math.pow(Math.floor(Math.random() * 20), 2); // gera quadrado perfeito
-      currentAnswer = Math.sqrt(n);
-      questionText = `√${n}`;
-      break;
+  if (operation === '+') {
+    currentAnswer = num1 + num2;
+    questionText = `${num1} + ${num2}`;
+  } else {
+    if (num1 >= num2) {
+      currentAnswer = num1 - num2;
+      questionText = `${num1} - ${num2}`;
+    } else {
+      currentAnswer = num2 - num1;
+      questionText = `${num2} - ${num1}`;
+    }
   }
 
   questionEl.textContent = questionText;
@@ -51,3 +60,70 @@ function generateQuestion() {
   updateStatus();
   startTimer();
 }
+
+function updateStatus() {
+  scoreEl.textContent = `Pontuação: ${score} | Tentativas restantes: ${maxErrors - errors}`;
+}
+
+function endGame(message) {
+  clearInterval(timerInterval);
+  feedbackEl.textContent = message;
+  btnAnswer.disabled = true;
+  answerInput.disabled = true;
+  btnStart.style.display = 'block';
+  btnStart.textContent = 'Recomeçar';
+}
+
+function checkAnswer() {
+  const userAnswer = parseInt(answerInput.value.trim());
+
+  if (isNaN(userAnswer)) {
+    alert('Por favor, digite um número.');
+    return;
+  }
+
+  if (userAnswer === currentAnswer) {
+    score++;
+    feedbackEl.textContent = '✅ Correto!';
+    feedbackEl.style.color = '#b2f2bb';
+  } else {
+    errors++;
+    feedbackEl.textContent = `❌ Errado! Resposta correta: ${currentAnswer}`;
+    feedbackEl.style.color = '#ffb3b3';
+  }
+
+  updateStatus();
+
+  if (score >= maxScore) {
+    endGame('🎉 Parabéns! Você atingiu a meta de 15 pontos! 🎉');
+    return;
+  }
+
+  if (errors >= maxErrors) {
+    endGame('😞 Você errou 4 vezes. Jogo encerrado.');
+    return;
+  }
+
+  setTimeout(generateQuestion, 1500);
+  startTimer();
+}
+
+btnAnswer.addEventListener('click', checkAnswer);
+answerInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    checkAnswer();
+  }
+});
+
+btnStart.addEventListener('click', () => {
+  score = 0;
+  errors = 0;
+  updateStatus();
+
+  feedbackEl.textContent = '';
+  btnAnswer.disabled = false;
+  answerInput.disabled = false;
+  gameContainer.style.display = 'block';
+  btnStart.style.display = 'none';
+  generateQuestion();
+});
