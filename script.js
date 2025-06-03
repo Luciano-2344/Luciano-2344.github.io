@@ -113,12 +113,15 @@ function checkAnswer() {
     alert('Por favor, digite uma resposta.');
     return;
   }
-  const userAnswer = Number(inputRaw);
 
+  const userAnswer = Number(inputRaw);
   const isSquareRoot = questionEl.textContent.includes('√');
+
+  // Ajuste para garantir que o arredondamento aconteça corretamente para todos os casos
   const roundedUserAnswer = isSquareRoot ? Math.round(userAnswer) : +userAnswer.toFixed(1);
   const roundedCorrectAnswer = isSquareRoot ? Math.round(currentAnswer) : +currentAnswer.toFixed(1);
 
+  // Verificação do resultado
   if (roundedUserAnswer === roundedCorrectAnswer) {
     score++;
     feedbackEl.textContent = '✅ Correto!';
@@ -141,7 +144,7 @@ function checkAnswer() {
     return;
   }
 
-  setTimeout(generateQuestion, 1500);
+  setTimeout(generateQuestion, 1500); // Gerar nova pergunta após o feedback
   startTimer();
 }
 
